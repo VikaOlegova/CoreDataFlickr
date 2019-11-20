@@ -6,24 +6,23 @@
 //  Copyright © 2019 Vika Olegova. All rights reserved.
 //
 
-import Foundation
 import CoreData
+import Foundation
 
 internal final class CoreDataStack {
-    
     static let shared: CoreDataStack = {
         let coreDataStack = CoreDataStack()
         return coreDataStack
     }()
-    
+
     let persistentContainer: NSPersistentContainer
-    
+
     private init() {
         let group = DispatchGroup()
-        
+
         persistentContainer = NSPersistentContainer(name: "Model")
         group.enter()
-        persistentContainer.loadPersistentStores { (storeDescription, error) in
+        persistentContainer.loadPersistentStores { storeDescription, error in
             print("storeDescription = \(storeDescription)")
             if let error = error {
                 assertionFailure(error.localizedDescription)
@@ -32,9 +31,9 @@ internal final class CoreDataStack {
         }
         group.wait()
     }
-    
-    func clear(completion: @escaping () -> ()) {
-        persistentContainer.performBackgroundTask { (context) in
+
+    func clear(completion: @escaping () -> Void) {
+        persistentContainer.performBackgroundTask { context in
             let deleteRequest = NSBatchDeleteRequest(fetchRequest: MOImage.fetchRequest())
             _ = try? context.execute(deleteRequest)
             try? context.save()

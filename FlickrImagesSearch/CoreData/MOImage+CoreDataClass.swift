@@ -7,10 +7,8 @@
 //
 //
 
-import Foundation
 import CoreData
+import Foundation
 
 @objc(MOImage)
-public class MOImage: NSManagedObject {
-
-}
+public class MOImage: NSManagedObject {}

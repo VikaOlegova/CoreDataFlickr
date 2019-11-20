@@ -6,11 +6,10 @@
 //  Copyright © 2019 Vika Olegova. All rights reserved.
 //
 
-import UIKit
 import CoreData
+import UIKit
 
 protocol CoreDataServiceProtocol {
-    
     func saveImages(images: [UIImage], completion: @escaping () -> Void)
     func fetchImages(perPage: Int,
                      page: Int,
@@ -18,11 +17,10 @@ protocol CoreDataServiceProtocol {
 }
 
 class CoreDataService: CoreDataServiceProtocol {
-    
     let stack = CoreDataStack.shared
-    
+
     func saveImages(images: [UIImage], completion: @escaping () -> Void) {
-        stack.persistentContainer.performBackgroundTask { (context) in
+        stack.persistentContainer.performBackgroundTask { context in
             defer {
                 completion()
             }
@@ -41,11 +39,11 @@ class CoreDataService: CoreDataServiceProtocol {
             }
         }
     }
-    
+
     func fetchImages(perPage: Int,
                      page: Int,
                      completion: @escaping ([UIImage]) -> Void) {
-        stack.persistentContainer.performBackgroundTask { (context) in
+        stack.persistentContainer.performBackgroundTask { context in
             print("Fetching Data (fetchLimit = \(perPage), fetchOffset = \(perPage * (page - 1))")
             let request: NSFetchRequest<MOImage> = MOImage.fetchRequest()
             request.returnsObjectsAsFaults = false

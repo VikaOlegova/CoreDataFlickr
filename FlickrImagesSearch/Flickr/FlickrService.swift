@@ -9,19 +9,17 @@
 import Foundation
 
 protocol FlickrServiceProtocol {
-
     func loadImageList(searchString: String,
                        perPage: Int,
                        completion: @escaping ([FlickrImage]) -> Void)
-    
+
     func loadUIImages(for images: [FlickrImage],
                       completion: @escaping ([FlickrImage]) -> Void)
 }
 
 class FlickrService: FlickrServiceProtocol {
-
     let networkService: NetworkServiceInput
-    
+
     init(networkService: NetworkServiceInput) {
         self.networkService = networkService
     }
@@ -35,41 +33,43 @@ class FlickrService: FlickrServiceProtocol {
                 completion([])
                 return
             }
-            let responseDictionary = try? JSONSerialization.jsonObject(with: data, options: .init()) as? Dictionary<String, Any>
+            let responseDictionary = try? JSONSerialization.jsonObject(with: data, options: .init()) as? [String: Any]
 
-            guard let response = responseDictionary,
-                let photosDictionary = response["photos"] as? Dictionary<String, Any>,
-                let photosArray = photosDictionary["photo"] as? [[String: Any]] else {
-                    completion([])
-                    return
+            guard
+                let response = responseDictionary,
+                let photosDictionary = response["photos"] as? [String: Any],
+                let photosArray = photosDictionary["photo"] as? [[String: Any]]
+            else {
+                completion([])
+                return
             }
 
             let models = photosArray.compactMap { (object) -> FlickrImage? in
                 guard
                     let urlString = object["url_m"] as? String,
                     let url = URL(string: urlString)
-                    else { return nil }
-                
+                else { return nil }
+
                 return FlickrImage(path: url, uiImage: nil)
             }
             completion(models)
         }
     }
-    
+
     func loadUIImages(for images: [FlickrImage],
                       completion: @escaping ([FlickrImage]) -> Void) {
         let group = DispatchGroup()
         var newImages: [FlickrImage] = []
         for model in images {
             group.enter()
-            networkService.loadImage(at: model.path) { [weak self] image in
+            networkService.loadImage(at: model.path) { image in
                 defer { group.leave() }
                 guard let image = image else { return }
-                
+
                 newImages.append(model.with(uiImage: image))
             }
         }
-        
+
         group.notify(queue: DispatchQueue.main) {
             completion(newImages)
         }

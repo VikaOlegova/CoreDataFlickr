@@ -7,17 +7,16 @@
 //
 //
 
-import Foundation
 import CoreData
+import Foundation
 
 extension MOImage {
-
     @nonobjc public class func fetchRequest() -> NSFetchRequest<MOImage> {
         return NSFetchRequest<MOImage>(entityName: "Image")
     }
 
     @NSManaged public var image: NSData?
-    
+
     convenience init(context: NSManagedObjectContext) {
         let entity = NSEntityDescription.entity(forEntityName: "Image", in: context)
         self.init(entity: entity!, insertInto: context)

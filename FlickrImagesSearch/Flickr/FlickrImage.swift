@@ -11,7 +11,7 @@ import UIKit
 struct FlickrImage {
     let path: URL
     let uiImage: UIImage?
-    
+
     func with(uiImage: UIImage) -> FlickrImage {
         return FlickrImage(path: path,
                            uiImage: uiImage)

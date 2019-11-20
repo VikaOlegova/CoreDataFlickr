@@ -9,32 +9,29 @@
 import UIKit
 
 protocol CoreDataPaginationServiceProtocol {
-    
     func loadFirstPage(by searchString: String)
     func loadNextPage() -> Bool
 }
 
 protocol CoreDataPaginationServiceDelegate: class {
-    
     func coreDataPaginationService(_ service: CoreDataPaginationServiceProtocol,
-                                 didLoad images: [UIImage],
-                                 on page: Int)
+                                   didLoad images: [UIImage],
+                                   on page: Int)
 }
 
 class CoreDataPaginationService: CoreDataPaginationServiceProtocol {
-    
     weak var delegate: CoreDataPaginationServiceDelegate?
-    
+
     var pageSize: Int
-    
+
     private(set) var isLoadingNextPage = false
     private(set) var nextPage = 1
-    private(set) var searchString: String? = nil
-    
+    private(set) var searchString: String?
+
     private let flickrLoader: FlickrLoaderServiceProtocol
 
     private let coreDataService: CoreDataServiceProtocol
-    
+
     init(coreDataService: CoreDataServiceProtocol,
          flickrLoader: FlickrLoaderServiceProtocol,
          pageSize: Int) {
@@ -42,9 +39,9 @@ class CoreDataPaginationService: CoreDataPaginationServiceProtocol {
         self.flickrLoader = flickrLoader
         self.pageSize = pageSize
     }
-    
+
     func loadFirstPage(by searchString: String) {
-        self.nextPage = 1
+        nextPage = 1
         self.searchString = searchString
         _ = loadNextPage()
     }
@@ -53,27 +50,27 @@ class CoreDataPaginationService: CoreDataPaginationServiceProtocol {
         guard
             let searchString = searchString,
             nextPage == 1 || !isLoadingNextPage
-            else { return false }
-        
+        else { return false }
+
         isLoadingNextPage = true
-        
+
         let page = nextPage
         nextPage += 1
-        
+
         func loadNextPageFromCoreData() {
-            self.coreDataService.fetchImages(perPage: self.pageSize, page: page, completion: {
+            coreDataService.fetchImages(perPage: pageSize, page: page, completion: {
                 self.delegate?.coreDataPaginationService(self, didLoad: $0, on: page)
             })
         }
-        
+
         func downloadImages() {
-            self.flickrLoader.loadImages(by: searchString, completion: {
+            flickrLoader.loadImages(by: searchString, completion: {
                 self.coreDataService.saveImages(images: $0, completion: {
                     loadNextPageFromCoreData()
                 })
             })
         }
-        
+
         coreDataService.fetchImages(perPage: pageSize, page: page) { [weak self] in
             guard let self = self else { return }
             self.isLoadingNextPage = false
@@ -86,4 +83,3 @@ class CoreDataPaginationService: CoreDataPaginationServiceProtocol {
         return true
     }
 }
-
