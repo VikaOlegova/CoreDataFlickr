@@ -13,14 +13,15 @@ class Assembly {
     func createModule() -> UIViewController {
         let networkService = NetworkService()
         let flickrService = FlickrService(networkService: networkService)
-        let flickrPaginationService = FlickrPaginationService(flickrService: flickrService,
-                                                              pageSize: 5)
+        let flickrLoader = FlickrLoaderService(flickrService: flickrService, pageSize: 100)
+        let coreDataService = CoreDataService()
+        let coreDataPaginationService = CoreDataPaginationService(coreDataService: coreDataService, flickrLoader: flickrLoader, pageSize: 5)
         
-        let presenter = Presenter(flickrService: flickrPaginationService)
+        let presenter = Presenter(coreDataService: coreDataPaginationService, pageSize: 5)
         let viewController = ViewController(presenter: presenter)
         presenter.view = viewController
         
-        flickrPaginationService.delegate = presenter
+        coreDataPaginationService.delegate = presenter
         
         return viewController
     }

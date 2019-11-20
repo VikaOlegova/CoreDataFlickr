@@ -29,10 +29,10 @@ class Presenter: PresenterInput {
     private(set) var images = [UIImage]()
     private(set) var searchString = ""
     
-    private let flickrService: FlickrPaginationServiceProtocol
+    private let coreDataService: CoreDataPaginationServiceProtocol
     
-    init(flickrService: FlickrPaginationServiceProtocol, pageSize: Int = 5) {
-        self.flickrService = flickrService
+    init(coreDataService: CoreDataPaginationServiceProtocol, pageSize: Int) {
+        self.coreDataService = coreDataService
         self.pageSize = pageSize
     }
     
@@ -41,29 +41,22 @@ class Presenter: PresenterInput {
         
         guard !searchString.isEmpty else { return }
         
-        flickrService.loadFirstPage(by: searchString)
+        coreDataService.loadFirstPage(by: searchString)
         view?.showLoadingIndicator(true)
     }
     
     func loadNextPage() {
-        guard flickrService.loadNextPage() else { return }
+        guard coreDataService.loadNextPage() else { return }
         view?.showLoadingIndicator(true)
     }
 }
 
-extension Presenter: FlickrPaginationServiceDelegate {
-    func flickrPaginationService(_ service: FlickrPaginationServiceProtocol,
-                                 didLoad images: [FlickrImage],
-                                 on page: Int,
-                                 by searchString: String) {
-        guard searchString == self.searchString else {
-            return
-        }
-        let viewModels: [UIImage] = images.compactMap {
-            guard let uiImage = $0.uiImage else { return nil }
-            return uiImage
-        }
-        view?.show(images: viewModels, firstPage: page == 1)
+extension Presenter: CoreDataPaginationServiceDelegate {
+    func coreDataPaginationService(_ service: CoreDataPaginationServiceProtocol,
+                                 didLoad images: [UIImage],
+                                 on page: Int) {
+ 
+        view?.show(images: images, firstPage: page == 1)
         view?.showLoadingIndicator(false)
     }
 }

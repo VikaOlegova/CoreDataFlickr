@@ -14,8 +14,7 @@ class FlickrAPI {
 	private static let baseUrl = "https://www.flickr.com/services/rest/"
 
 	static func searchPath(text: String,
-                           perPage: Int,
-                           page: Int) -> URL {
+                           perPage: Int) -> URL {
 		guard var components = URLComponents(string: baseUrl) else {
 			return URL(string: baseUrl)!
 		}
@@ -27,8 +26,7 @@ class FlickrAPI {
             "extras" : "url_m",
             "format" : "json",
             "nojsoncallback" : "1",
-            "per_page" : String(perPage),
-            "page" : String(page)
+            "per_page" : String(perPage)
         ]
 
 		components.queryItems = params.map{ URLQueryItem(name: $0.key, value: $0.value) }

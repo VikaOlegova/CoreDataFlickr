@@ -27,11 +27,14 @@ class ViewController: UIViewController {
         fatalError("Метод не реализован")
     }
     
+    let searchString = "kitten"
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         view.addSubview(tableView)
         tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.estimatedRowHeight = tableView.frame.height/5.5
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: view.topAnchor),
             tableView.leftAnchor.constraint(equalTo: view.leftAnchor),
@@ -45,30 +48,53 @@ class ViewController: UIViewController {
         spinner.frame = CGRect(x: 0, y: 0, width: 0, height: 44)
         showLoadingIndicator(false)
         
-        self.presenter.loadFirstPage(searchString: "cat")
+        self.presenter.loadFirstPage(searchString: searchString)
         
         navigationItem.title = "Китики"
+        
+        let clear = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(didTapClear))
+        
+        navigationItem.rightBarButtonItem = clear
+    }
+    
+    @objc
+    func didTapClear() {
+        CoreDataStack.shared.clear() {
+            DispatchQueue.main.async {
+                self.images = []
+                self.tableView.reloadData()
+                self.presenter.loadFirstPage(searchString: self.searchString)
+            }
+        }
     }
 }
 
 extension ViewController: PresenterOutput {
     
     func show(images: [UIImage], firstPage: Bool) {
-        if firstPage {
-            self.images = images
-            tableView.reloadSections(IndexSet(arrayLiteral: 0), with: .automatic)
-            tableView.setContentOffset(CGPoint(x: 0, y: -tableView.adjustedContentInset.top),
-                                       animated: true)
-        } else {
-            let indexes = self.images.count..<self.images.count+images.count
-            self.images += images
-            tableView.insertRows(at: indexes.map { IndexPath(row: $0, section: 0) }, with: .automatic)
+        DispatchQueue.main.async {
+            if firstPage {
+                self.images = images
+                self.tableView.reloadSections(IndexSet(arrayLiteral: 0), with: .automatic)
+                self.tableView.setContentOffset(CGPoint(x: 0, y: -self.tableView.adjustedContentInset.top),
+                                           animated: true)
+                
+                print("display first page \(images.count)")
+            } else {
+                let indexes = self.images.count..<self.images.count+images.count
+                self.images += images
+                self.tableView.insertRows(at: indexes.map { IndexPath(row: $0, section: 0) }, with: .automatic)
+                
+                print("display next page \(images.count)")
+            }
         }
     }
     
     func showLoadingIndicator(_ show: Bool) {
-        tableView.tableFooterView = show ? spinner : emptyFooter
-        spinner.startAnimating()
+        DispatchQueue.main.async {
+            self.tableView.tableFooterView = show ? self.spinner : self.emptyFooter
+            self.spinner.startAnimating()
+        }
     }
 }
 
@@ -83,6 +109,7 @@ extension ViewController: UITableViewDataSource {
         cell.imageView?.image = images[indexPath.row]
         
         if indexPath.row == images.count - 1 {
+            print("hit bottom")
             presenter.loadNextPage()
         }
         

@@ -12,11 +12,9 @@ protocol FlickrServiceProtocol {
 
     func loadImageList(searchString: String,
                        perPage: Int,
-                       page: Int,
                        completion: @escaping ([FlickrImage]) -> Void)
     
     func loadUIImages(for images: [FlickrImage],
-                      page: Int,
                       completion: @escaping ([FlickrImage]) -> Void)
 }
 
@@ -30,9 +28,8 @@ class FlickrService: FlickrServiceProtocol {
 
     func loadImageList(searchString: String,
                        perPage: Int,
-                       page: Int,
                        completion: @escaping ([FlickrImage]) -> Void) {
-        let url = FlickrAPI.searchPath(text: searchString, perPage: perPage, page: page)
+        let url = FlickrAPI.searchPath(text: searchString, perPage: perPage)
         networkService.getData(at: url) { data in
             guard let data = data else {
                 completion([])
@@ -60,7 +57,6 @@ class FlickrService: FlickrServiceProtocol {
     }
     
     func loadUIImages(for images: [FlickrImage],
-                      page: Int,
                       completion: @escaping ([FlickrImage]) -> Void) {
         let group = DispatchGroup()
         var newImages: [FlickrImage] = []
