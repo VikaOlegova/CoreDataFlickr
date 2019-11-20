@@ -29,7 +29,6 @@ class CoreDataPaginationService: CoreDataPaginationServiceProtocol {
     private(set) var searchString: String?
 
     private let flickrLoader: FlickrLoaderServiceProtocol
-
     private let coreDataService: CoreDataServiceProtocol
 
     init(coreDataService: CoreDataServiceProtocol,
@@ -58,21 +57,24 @@ class CoreDataPaginationService: CoreDataPaginationServiceProtocol {
         nextPage += 1
 
         func loadNextPageFromCoreData() {
-            coreDataService.fetchImages(perPage: pageSize, page: page, completion: {
+            coreDataService.fetchImages(perPage: pageSize, page: page) { [weak self] in
+                guard let self = self else { return }
+                
                 self.delegate?.coreDataPaginationService(self, didLoad: $0, on: page)
-            })
+            }
         }
 
         func downloadImages() {
-            flickrLoader.loadImages(by: searchString, completion: {
-                self.coreDataService.saveImages(images: $0, completion: {
+            flickrLoader.loadImages(by: searchString, count: 100) { [weak self] in
+                self?.coreDataService.saveImages(images: $0) {
                     loadNextPageFromCoreData()
-                })
-            })
+                }
+            }
         }
 
         coreDataService.fetchImages(perPage: pageSize, page: page) { [weak self] in
             guard let self = self else { return }
+            
             self.isLoadingNextPage = false
             if page == 1, $0.isEmpty {
                 downloadImages()

@@ -17,7 +17,7 @@ protocol CoreDataServiceProtocol {
 }
 
 class CoreDataService: CoreDataServiceProtocol {
-    let stack = CoreDataStack.shared
+    private let stack = CoreDataStack.shared
 
     func saveImages(images: [UIImage], completion: @escaping () -> Void) {
         stack.persistentContainer.performBackgroundTask { context in
@@ -25,11 +25,8 @@ class CoreDataService: CoreDataServiceProtocol {
                 completion()
             }
             for image in images {
-                let newImageObj = MOImage(context: context)
-                guard let imageData = image.jpegData(compressionQuality: 1.0) else { return }
-                let data = NSData(data: imageData)
-                newImageObj.image = data
-                print("saved \(data.hash) image")
+                guard let data = image.jpegData(compressionQuality: 1.0) else { return }
+                _ = MOImage(context: context, data: data)
             }
             print("Storing Data..")
             do {
@@ -44,17 +41,18 @@ class CoreDataService: CoreDataServiceProtocol {
                      page: Int,
                      completion: @escaping ([UIImage]) -> Void) {
         stack.persistentContainer.performBackgroundTask { context in
-            print("Fetching Data (fetchLimit = \(perPage), fetchOffset = \(perPage * (page - 1))")
             let request: NSFetchRequest<MOImage> = MOImage.fetchRequest()
             request.returnsObjectsAsFaults = false
             request.fetchLimit = perPage
             request.fetchOffset = perPage * (page - 1)
+            print("Fetching Data (fetchLimit = \(request.fetchLimit), fetchOffset = \(request.fetchOffset))")
             do {
                 let result = try context.fetch(request)
-                print("Fetched \(result.count) images")
-                completion(result
                     .compactMap { $0.image }
-                    .compactMap { UIImage(data: $0 as Data, scale: 1.0) })
+                    .compactMap { UIImage(data: $0 as Data, scale: 1.0) }
+                
+                print("Fetched \(result.count) images")
+                completion(result)
             } catch {
                 print("Fetching data Failed")
                 completion([])

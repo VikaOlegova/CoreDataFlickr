@@ -10,10 +10,7 @@ import CoreData
 import Foundation
 
 internal final class CoreDataStack {
-    static let shared: CoreDataStack = {
-        let coreDataStack = CoreDataStack()
-        return coreDataStack
-    }()
+    static let shared = CoreDataStack()
 
     let persistentContainer: NSPersistentContainer
 

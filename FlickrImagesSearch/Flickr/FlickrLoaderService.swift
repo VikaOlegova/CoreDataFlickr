@@ -9,22 +9,20 @@
 import UIKit
 
 protocol FlickrLoaderServiceProtocol {
-    func loadImages(by searchString: String, completion: @escaping ([UIImage]) -> Void)
+    func loadImages(by searchString: String, count: Int, completion: @escaping ([UIImage]) -> Void)
 }
 
 class FlickrLoaderService: FlickrLoaderServiceProtocol {
-    var pageSize: Int
 
     private let flickrService: FlickrServiceProtocol
 
-    init(flickrService: FlickrServiceProtocol, pageSize: Int) {
+    init(flickrService: FlickrServiceProtocol) {
         self.flickrService = flickrService
-        self.pageSize = pageSize
     }
 
-    func loadImages(by searchString: String, completion: @escaping ([UIImage]) -> Void) {
+    func loadImages(by searchString: String, count: Int, completion: @escaping ([UIImage]) -> Void) {
         flickrService.loadImageList(searchString: searchString,
-                                    perPage: pageSize) { [flickrService] in
+                                    perPage: count) { [flickrService] in
             print("got \($0.count) urls")
             flickrService.loadUIImages(for: $0,
                                        completion: {

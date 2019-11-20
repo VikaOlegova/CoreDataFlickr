@@ -117,14 +117,30 @@
 		3CB2C7772384E7E80021CBCA /* CoreData */ = {
 			isa = PBXGroup;
 			children = (
-				3CB2C7712384E78A0021CBCA /* MOImage+CoreDataClass.swift */,
-				3CB2C7722384E78A0021CBCA /* MOImage+CoreDataProperties.swift */,
-				3CB2C76E2384E7100021CBCA /* Model.xcdatamodeld */,
+				3CB2C7AB2385F38C0021CBCA /* Models */,
 				3CB2C7752384E7C50021CBCA /* CoreDataStack.swift */,
 				3CB2C76C2384E0620021CBCA /* CoreDataPaginationService.swift */,
 				3CB2C7782384F7520021CBCA /* CoreDataService.swift */,
 			);
 			path = CoreData;
+			sourceTree = "<group>";
+		};
+		3CB2C7AB2385F38C0021CBCA /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				3CB2C76E2384E7100021CBCA /* Model.xcdatamodeld */,
+				3CB2C7AC2385F3A00021CBCA /* MOImage */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		3CB2C7AC2385F3A00021CBCA /* MOImage */ = {
+			isa = PBXGroup;
+			children = (
+				3CB2C7712384E78A0021CBCA /* MOImage+CoreDataClass.swift */,
+				3CB2C7722384E78A0021CBCA /* MOImage+CoreDataProperties.swift */,
+			);
+			path = MOImage;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

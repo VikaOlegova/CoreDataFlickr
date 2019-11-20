@@ -17,8 +17,10 @@ extension MOImage {
 
     @NSManaged public var image: NSData?
 
-    convenience init(context: NSManagedObjectContext) {
+    convenience init(context: NSManagedObjectContext, data: Data) {
         let entity = NSEntityDescription.entity(forEntityName: "Image", in: context)
         self.init(entity: entity!, insertInto: context)
+        
+        image = NSData(data: data)
     }
 }
