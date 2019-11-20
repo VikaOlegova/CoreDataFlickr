@@ -12,13 +12,12 @@ protocol PresenterInput {
     
     func loadFirstPage(searchString: String)
     func loadNextPage()
-    func resetSearch()
 }
 
 protocol PresenterOutput: class {
     
     func showLoadingIndicator(_ show: Bool)
-    func show(images: [ImageViewModel], firstPage: Bool)
+    func show(images: [UIImage], firstPage: Bool)
 }
 
 class Presenter: PresenterInput {
@@ -27,12 +26,12 @@ class Presenter: PresenterInput {
     
     var pageSize: Int
     
-    private(set) var images = [ImageViewModel]()
+    private(set) var images = [UIImage]()
     private(set) var searchString = ""
     
     private let flickrService: FlickrPaginationServiceProtocol
     
-    init(flickrService: FlickrPaginationServiceProtocol, pageSize: Int = 20) {
+    init(flickrService: FlickrPaginationServiceProtocol, pageSize: Int = 5) {
         self.flickrService = flickrService
         self.pageSize = pageSize
     }
@@ -50,12 +49,6 @@ class Presenter: PresenterInput {
         guard flickrService.loadNextPage() else { return }
         view?.showLoadingIndicator(true)
     }
-    
-    func resetSearch() {
-        searchString = ""
-        view?.show(images: [], firstPage: true)
-        view?.showLoadingIndicator(false)
-    }
 }
 
 extension Presenter: FlickrPaginationServiceDelegate {
@@ -66,9 +59,9 @@ extension Presenter: FlickrPaginationServiceDelegate {
         guard searchString == self.searchString else {
             return
         }
-        let viewModels: [ImageViewModel] = images.compactMap {
+        let viewModels: [UIImage] = images.compactMap {
             guard let uiImage = $0.uiImage else { return nil }
-            return ImageViewModel(image: uiImage)
+            return uiImage
         }
         view?.show(images: viewModels, firstPage: page == 1)
         view?.showLoadingIndicator(false)

@@ -34,7 +34,7 @@ class FlickrPaginationService: FlickrPaginationServiceProtocol {
     
     private let flickrService: FlickrServiceProtocol
     
-    init(flickrService: FlickrServiceProtocol, pageSize: Int = 20) {
+    init(flickrService: FlickrServiceProtocol, pageSize: Int = 5) {
         self.flickrService = flickrService
         self.pageSize = pageSize
     }

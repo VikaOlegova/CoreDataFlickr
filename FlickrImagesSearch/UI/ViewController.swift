@@ -11,15 +11,12 @@ import UIKit
 class ViewController: UIViewController {
     
     let tableView = UITableView()
-    var images: [ImageViewModel] = []
+    var images: [UIImage] = []
     let reuseId = "UITableViewCellreuseId"
     let presenter: PresenterInput
-    let searchController = UISearchController(searchResultsController: nil)
     
     let spinner = UIActivityIndicatorView(style: .gray)
     let emptyFooter = UIView()
-    
-    var searchWorkItem = DispatchWorkItem(block: { })
     
     init(presenter: PresenterInput) {
         self.presenter = presenter
@@ -48,22 +45,15 @@ class ViewController: UIViewController {
         spinner.frame = CGRect(x: 0, y: 0, width: 0, height: 44)
         showLoadingIndicator(false)
         
-        searchController.searchResultsUpdater = self
-        searchController.obscuresBackgroundDuringPresentation = false
-        searchController.searchBar.placeholder = "Search images"
-        navigationItem.searchController = searchController
-        definesPresentationContext = true
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        searchController.searchBar.becomeFirstResponder()
+        self.presenter.loadFirstPage(searchString: "cat")
+        
+        navigationItem.title = "Китики"
     }
 }
 
 extension ViewController: PresenterOutput {
     
-    func show(images: [ImageViewModel], firstPage: Bool) {
+    func show(images: [UIImage], firstPage: Bool) {
         if firstPage {
             self.images = images
             tableView.reloadSections(IndexSet(arrayLiteral: 0), with: .automatic)
@@ -82,24 +72,6 @@ extension ViewController: PresenterOutput {
     }
 }
 
-extension ViewController: UISearchResultsUpdating {
-    
-    func updateSearchResults (for searchController: UISearchController) {
-        let searchBar = searchController.searchBar
-        let currentText = searchBar.text!
-        searchWorkItem.cancel()
-        if currentText.isEmpty {
-            presenter.resetSearch()
-            return
-        }
-        searchWorkItem = DispatchWorkItem(block: { [weak self] in
-            print("search \(currentText)")
-            self?.presenter.loadFirstPage(searchString: currentText)
-        })
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: searchWorkItem)
-    }
-}
-
 extension ViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -108,8 +80,7 @@ extension ViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: reuseId, for: indexPath)
-        let model = images[indexPath.row]
-        cell.imageView?.image = model.image
+        cell.imageView?.image = images[indexPath.row]
         
         if indexPath.row == images.count - 1 {
             presenter.loadNextPage()
@@ -122,7 +93,12 @@ extension ViewController: UITableViewDataSource {
 extension ViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let image = images[indexPath.row].image
+        tableView.deselectRow(at: indexPath, animated: true)
+        let image = images[indexPath.row]
         self.navigationController?.pushViewController(ImageViewController(image: image), animated: true)
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return tableView.frame.height/5.5
     }
 }

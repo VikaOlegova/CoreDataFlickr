@@ -18,7 +18,6 @@
 		3C6E8EA22377DBD200C6C5F0 /* FlickrPaginationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C6E8E9D2377DBD200C6C5F0 /* FlickrPaginationService.swift */; };
 		3C6E8EA62377E03E00C6C5F0 /* FlickrImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C6E8EA52377E03E00C6C5F0 /* FlickrImage.swift */; };
 		3C6E8EA82377E55A00C6C5F0 /* Presenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C6E8EA72377E55A00C6C5F0 /* Presenter.swift */; };
-		3C6E8EAD2377E75000C6C5F0 /* ImageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C6E8EAC2377E75000C6C5F0 /* ImageViewModel.swift */; };
 		3C6E8EAF2377E78F00C6C5F0 /* Assembly.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C6E8EAE2377E78F00C6C5F0 /* Assembly.swift */; };
 /* End PBXBuildFile section */
 
@@ -36,7 +35,6 @@
 		3C6E8E9D2377DBD200C6C5F0 /* FlickrPaginationService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlickrPaginationService.swift; sourceTree = "<group>"; };
 		3C6E8EA52377E03E00C6C5F0 /* FlickrImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlickrImage.swift; sourceTree = "<group>"; };
 		3C6E8EA72377E55A00C6C5F0 /* Presenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Presenter.swift; sourceTree = "<group>"; };
-		3C6E8EAC2377E75000C6C5F0 /* ImageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageViewModel.swift; sourceTree = "<group>"; };
 		3C6E8EAE2377E78F00C6C5F0 /* Assembly.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Assembly.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -95,7 +93,6 @@
 		3C6E8EAB2377E74300C6C5F0 /* UI */ = {
 			isa = PBXGroup;
 			children = (
-				3C6E8EAC2377E75000C6C5F0 /* ImageViewModel.swift */,
 				3C6E8E862377DB6000C6C5F0 /* ViewController.swift */,
 				3C6E8EA72377E55A00C6C5F0 /* Presenter.swift */,
 				3C6E8EAE2377E78F00C6C5F0 /* Assembly.swift */,
@@ -178,7 +175,6 @@
 				3C6E8EAF2377E78F00C6C5F0 /* Assembly.swift in Sources */,
 				3C6E8E872377DB6000C6C5F0 /* ViewController.swift in Sources */,
 				3C6E8EA82377E55A00C6C5F0 /* Presenter.swift in Sources */,
-				3C6E8EAD2377E75000C6C5F0 /* ImageViewModel.swift in Sources */,
 				3C6E8E852377DB6000C6C5F0 /* AppDelegate.swift in Sources */,
 				3C6E8E9F2377DBD200C6C5F0 /* NetworkService.swift in Sources */,
 				3C6E8EA22377DBD200C6C5F0 /* FlickrPaginationService.swift in Sources */,
